@@ -15,12 +15,14 @@ services:
       - key: JWT_SECRET
         generateValue: true   # Render génère automatiquement un secret fort
       - key: DB_HOST
-        sync: false           # À remplir manuellement (db4free.net)
+        sync: false           # À remplir : gateway01.eu-central-1.prod.aws.tidbcloud.com
       - key: DB_PORT
-        value: "3306"
+        sync: false           # À remplir : 4000 (TiDB Cloud)
       - key: DB_USER
-        sync: false           # À remplir manuellement
+        sync: false           # À remplir : depuis TiDB Cloud
       - key: DB_PASSWORD
-        sync: false           # À remplir manuellement
+        sync: false           # À remplir : depuis TiDB Cloud
       - key: DB_NAME
-        sync: false           # À remplir manuellement
+        sync: false           # À remplir : depuis TiDB Cloud
+      - key: DB_SSL
+        value: "true"         # TiDB Cloud exige SSL

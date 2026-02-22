@@ -7,7 +7,11 @@ const mysql = require('mysql2/promise');
 require('dotenv').config();
 
 // Configuration du pool de connexions
-// Supporte les variables Railway (MYSQLHOST, MYSQLUSER...) et les variables custom (DB_HOST, DB_USER...)
+// Supporte Railway (MYSQLHOST...), TiDB Cloud (DB_SSL=true), et les variables custom (DB_HOST...)
+const sslConfig = process.env.DB_SSL === 'true'
+  ? { ssl: { rejectUnauthorized: true, minVersion: 'TLSv1.2' } }
+  : {};
+
 const pool = mysql.createPool({
   host:     process.env.DB_HOST     || process.env.MYSQLHOST     || 'localhost',
   port:     parseInt(process.env.DB_PORT || process.env.MYSQLPORT || '3306'),
@@ -18,7 +22,8 @@ const pool = mysql.createPool({
   connectionLimit: 10,
   queueLimit: 0,
   enableKeepAlive: true,
-  keepAliveInitialDelay: 0
+  keepAliveInitialDelay: 0,
+  ...sslConfig
 });
 
 /**
