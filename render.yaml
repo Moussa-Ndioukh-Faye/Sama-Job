@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: samajob-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: node start.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_EXPIRE
+        value: 7d
+      - key: MAX_FILE_SIZE
+        value: "5242880"
+      - key: JWT_SECRET
+        generateValue: true   # Render génère automatiquement un secret fort
+      - key: DB_HOST
+        sync: false           # À remplir manuellement (db4free.net)
+      - key: DB_PORT
+        value: "3306"
+      - key: DB_USER
+        sync: false           # À remplir manuellement
+      - key: DB_PASSWORD
+        sync: false           # À remplir manuellement
+      - key: DB_NAME
+        sync: false           # À remplir manuellement
