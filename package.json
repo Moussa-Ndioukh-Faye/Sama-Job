@@ -1,0 +1,34 @@
+{
+  "name": "samajob",
+  "version": "1.0.0",
+  "description": "Plateforme de services en ligne - Backend + Mobile",
+  "private": true,
+  "scripts": {
+    "backend:install": "cd backend && npm install --legacy-peer-deps",
+    "backend:dev": "cd backend && npm run dev",
+    "backend:start": "cd backend && npm start",
+    "backend:migrate": "cd backend && npm run migrate",
+    "backend:seed": "cd backend && npm run seed",
+    "backend:test": "cd backend && node test-api.js",
+    "mobile:install": "cd mobile && npm install --legacy-peer-deps",
+    "mobile:start": "cd mobile && npx expo start",
+    "mobile:web": "cd mobile && npx expo start --web",
+    "mobile:android": "cd mobile && npx expo start --android",
+    "mobile:ios": "cd mobile && npx expo start --ios",
+    "install-all": "npm run backend:install && npm run mobile:install",
+    "start": "npm run backend:dev",
+    "dev": "npm run backend:dev"
+  },
+  "keywords": [
+    "samajob",
+    "freelance",
+    "services",
+    "mobile",
+    "fullstack"
+  ],
+  "author": "SamaJob Team",
+  "license": "MIT",
+  "dependencies": {
+    "expo-haptics": "^15.0.8"
+  }
+}
