@@ -49,9 +49,13 @@ class Utilisateur {
    */
   static async seConnecter(identifier, motDePasse) {
     // Identifier peut être email ou téléphone
+    // JOIN prestataires pour inclure statut_validation dans la réponse
     const sql = `
-      SELECT * FROM utilisateurs 
-      WHERE (email = ? OR telephone = ?) AND statut = 'actif'
+      SELECT u.*, p.statut_validation, p.domaine, p.disponibilite,
+             p.note_globale AS prestataire_note, p.nombre_missions_realisees
+      FROM utilisateurs u
+      LEFT JOIN prestataires p ON u.id = p.id AND u.role = 'prestataire'
+      WHERE (u.email = ? OR u.telephone = ?) AND u.statut = 'actif'
     `;
 
     const users = await query(sql, [identifier, identifier]);
@@ -79,7 +83,14 @@ class Utilisateur {
    * Trouver par ID
    */
   static async trouverParId(id) {
-    const sql = 'SELECT * FROM utilisateurs WHERE id = ?';
+    // JOIN prestataires pour inclure statut_validation dans la réponse
+    const sql = `
+      SELECT u.*, p.statut_validation, p.domaine, p.disponibilite,
+             p.note_globale AS prestataire_note, p.nombre_missions_realisees
+      FROM utilisateurs u
+      LEFT JOIN prestataires p ON u.id = p.id AND u.role = 'prestataire'
+      WHERE u.id = ?
+    `;
     const users = await query(sql, [id]);
 
     if (users.length === 0) {

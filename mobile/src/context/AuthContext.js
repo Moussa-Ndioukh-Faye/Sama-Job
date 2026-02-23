@@ -66,6 +66,12 @@ export const AuthProvider = ({ children }) => {
       return { success: false, error: msg };
     } catch (error) {
       console.error('Erreur inscription:', error);
+      // Erreur réseau : le serveur est inaccessible
+      if (!error.response) {
+        const message = 'Serveur inaccessible. Vérifiez que le backend est démarré et que l\'IP est correcte.';
+        setError(message);
+        return { success: false, error: message, networkError: true };
+      }
       const data = error.response?.data;
       // Priorité : userMessage (spécifique) > message > fallback
       const message = data?.userMessage || data?.message || 'Erreur lors de l\'inscription';
@@ -99,6 +105,11 @@ export const AuthProvider = ({ children }) => {
       return { success: false, error: msg };
     } catch (error) {
       console.error('Erreur connexion:', error);
+      if (!error.response) {
+        const message = 'Serveur inaccessible. Vérifiez que le backend est démarré et que l\'IP est correcte.';
+        setError(message);
+        return { success: false, error: message, networkError: true };
+      }
       const data = error.response?.data;
       const message = data?.userMessage || data?.message || 'Erreur lors de la connexion';
       setError(message);
