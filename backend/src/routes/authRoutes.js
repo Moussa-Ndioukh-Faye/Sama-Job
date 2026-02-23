@@ -12,16 +12,21 @@ const { strictRateLimiter } = require('../middleware/rateLimiter');
 
 // Routes publiques avec rate limiting strict
 router.post('/creer-compte', strictRateLimiter, createAccountRules, validate, authController.creerUnCompte);
-// Normaliser `email`/`telephone` en `identifier` si nécessaire
+// Normaliser `email`/`telephone` en `identifier` + mettre l'email en minuscules
+// Doit s'exécuter AVANT loginRules pour que la validation porte sur le bon champ
 const normalizeLoginIdentifier = (req, res, next) => {
-	if (!req.body.identifier) {
-		if (req.body.email) req.body.identifier = req.body.email;
-		else if (req.body.telephone) req.body.identifier = req.body.telephone;
-	}
-	next();
+  if (!req.body.identifier) {
+    if (req.body.email) req.body.identifier = req.body.email;
+    else if (req.body.telephone) req.body.identifier = req.body.telephone;
+  }
+  // Normaliser l'email en minuscules (cohérent avec createAccountRules → normalizeEmail)
+  if (req.body.identifier && req.body.identifier.includes('@')) {
+    req.body.identifier = req.body.identifier.trim().toLowerCase();
+  }
+  next();
 };
 
-router.post('/connexion', strictRateLimiter, loginRules, validate, normalizeLoginIdentifier, authController.seConnecter);
+router.post('/connexion', strictRateLimiter, normalizeLoginIdentifier, loginRules, validate, authController.seConnecter);
 
 // Routes protégées
 router.get('/profil', verifierToken, authController.getProfilUtilisateur);
