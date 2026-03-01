@@ -26,8 +26,7 @@
       "package": "com.samajob.app"
     },
     "web": {
-      "favicon": "./assets/logo1.png",
-      "baseUrl": "/Sama-Job"
+      "favicon": "./assets/logo1.png"
     },
     "extra": {
       "eas": {
