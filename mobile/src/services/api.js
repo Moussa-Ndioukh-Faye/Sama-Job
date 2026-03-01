@@ -12,9 +12,10 @@ const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://192.168.1.8:3000
 // Créer une instance axios
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 10000,
+  timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
+    'Bypass-Tunnel-Reminder': 'true', // Contourne la page interstitielle de localtunnel
   }
 });
 

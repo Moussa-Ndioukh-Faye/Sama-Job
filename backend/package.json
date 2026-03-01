@@ -13,7 +13,9 @@
     "test-db": "node test-db-connection.js",
     "create-admin": "node create-admin.js",
     "test-auth": "node test-inscription.js",
-    "debug-login": "node debug-connexion.js"
+    "debug-login": "node debug-connexion.js",
+    "tunnel": "node tunnel.js",
+    "dev:tunnel": "concurrently \"npm run dev\" \"node tunnel.js\""
   },
   "jest": {
     "testEnvironment": "node"
@@ -39,12 +41,14 @@
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
-    "mysql2": "^3.6.5",
+    "mysql2": "^3.17.4",
     "nodemailer": "^6.9.7"
   },
   "devDependencies": {
+    "concurrently": "^9.2.1",
     "eslint": "^10.0.0",
     "jest": "^30.2.0",
+    "localtunnel": "^2.0.2",
     "nodemon": "^3.0.2",
     "supertest": "^7.2.2"
   }

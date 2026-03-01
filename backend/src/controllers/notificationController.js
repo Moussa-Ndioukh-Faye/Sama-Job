@@ -39,12 +39,12 @@ exports.compterNonLues = async (req, res) => {
   try {
     const utilisateurId = req.user.userId;
 
-    const sql = 'SELECT COUNT(*) as count FROM notifications WHERE utilisateur_id = ? AND lue = false';
+    const sql = 'SELECT COUNT(*) as count FROM notifications WHERE utilisateur_id = ? AND lue = FALSE';
     const result = await query(sql, [utilisateurId]);
 
     res.json({
       success: true,
-      data: { count: result[0].count }
+      data: { count: Number(result[0].count || 0) }
     });
   } catch (error) {
     console.error('Erreur comptage notifications:', error);

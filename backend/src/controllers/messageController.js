@@ -147,6 +147,31 @@ exports.marquerCommeLu = async (req, res) => {
 };
 
 /**
+ * Marquer tous les messages d'une conversation comme lus
+ * Appelé quand l'utilisateur ouvre une conversation
+ */
+exports.marquerConversationCommeLue = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { utilisateurId } = req.params;
+
+    await Message.marquerConversationCommeLue(userId, parseInt(utilisateurId));
+
+    res.json({
+      success: true,
+      message: 'Conversation marquée comme lue',
+    });
+  } catch (error) {
+    console.error('Erreur marquage conversation:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erreur lors du marquage de la conversation',
+      error: error.message,
+    });
+  }
+};
+
+/**
  * Compter les messages non lus
  */
 exports.compterNonLus = async (req, res) => {

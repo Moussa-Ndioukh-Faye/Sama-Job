@@ -1,55 +1,54 @@
 /**
- * Configuration de la Base de Données MySQL
- * Pool de connexions pour optimiser les performances
+ * Configuration de la Base de Données MySQL (MariaDB local)
  */
 
 const mysql = require('mysql2/promise');
 require('dotenv').config();
 
-// Configuration du pool de connexions
-// Supporte Railway (MYSQLHOST...), TiDB Cloud (DB_SSL=true), et les variables custom (DB_HOST...)
-const sslConfig = process.env.DB_SSL === 'true'
-  ? { ssl: { rejectUnauthorized: true, minVersion: 'TLSv1.2' } }
-  : {};
-
 const pool = mysql.createPool({
-  host:     process.env.DB_HOST     || process.env.MYSQLHOST     || 'localhost',
-  port:     parseInt(process.env.DB_PORT || process.env.MYSQLPORT || '3306'),
-  user:     process.env.DB_USER     || process.env.MYSQLUSER     || 'root',
-  password: process.env.DB_PASSWORD || process.env.MYSQLPASSWORD || '',
-  database: process.env.DB_NAME     || process.env.MYSQLDATABASE || 'samajob',
+  host: process.env.DB_HOST || 'localhost',
+  port: parseInt(process.env.DB_PORT) || 3306,
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '',
+  database: process.env.DB_NAME || 'samajob',
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0,
-  enableKeepAlive: true,
-  keepAliveInitialDelay: 0,
-  ...sslConfig
+  charset: 'utf8mb4',
+  timezone: '+00:00',
+  // Retourner les BIGINT (COUNT, SUM) comme nombres JS, pas BigInt
+  supportBigNumbers: true,
+  bigNumberStrings: false,
+  // Retourner les DECIMAL/FLOAT comme nombres JS, pas strings
+  decimalNumbers: true,
+  // SSL requis pour les bases cloud (Railway, TiDB, PlanetScale...)
+  ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false
 });
 
 /**
- * Test de connexion à la base de données
+ * Test de connexion
  */
 const testConnection = async () => {
   try {
-    const connection = await pool.getConnection();
-    console.log('✅ Connexion MySQL réussie');
-    connection.release();
+    await pool.query('SELECT 1');
+    console.log('Connexion MySQL reussie');
     return true;
   } catch (error) {
-    console.error('❌ Erreur de connexion MySQL:', error.message);
+    console.error('Erreur de connexion MySQL:', error.message);
     return false;
   }
 };
 
 /**
  * Exécuter une requête SQL
+ * Retourne les rows pour SELECT, OkPacket pour INSERT/UPDATE/DELETE
  */
 const query = async (sql, params = []) => {
   try {
-    const [results] = await pool.execute(sql, params);
-    return results;
+    const [result] = await pool.execute(sql, params);
+    return result;
   } catch (error) {
     console.error('Erreur SQL:', error.message);
+    console.error('SQL:', sql);
     throw error;
   }
 };
@@ -61,9 +60,4 @@ const getConnection = async () => {
   return await pool.getConnection();
 };
 
-module.exports = {
-  pool,
-  query,
-  getConnection,
-  testConnection
-};
+module.exports = { pool, query, getConnection, testConnection };

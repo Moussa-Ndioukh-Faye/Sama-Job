@@ -20,10 +20,13 @@ router.get('/conversations/:utilisateurId', messageController.obtenirConversatio
 // Envoyer un message
 router.post('/', messageController.envoyerMessage);
 
-// Marquer un message comme lu
-router.put('/:messageId/lu', messageController.marquerCommeLu);
-
 // Compter les messages non lus
 router.get('/non-lus/count', messageController.compterNonLus);
+
+// Marquer toute une conversation comme lue (quand l'utilisateur ouvre une conversation)
+router.put('/conversations/:utilisateurId/lus', messageController.marquerConversationCommeLue);
+
+// Marquer un message individuel comme lu
+router.put('/:messageId/lu', messageController.marquerCommeLu);
 
 module.exports = router;

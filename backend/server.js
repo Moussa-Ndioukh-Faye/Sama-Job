@@ -106,7 +106,7 @@ app.get('/health', async (req, res) => {
   
   res.json({
     success: true,
-    message: 'SamaJob API MySQL est opérationnelle',
+    message: 'SamaJob API est opérationnelle',
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV,
     database: dbConnected ? 'Connectée' : 'Déconnectée'
@@ -204,24 +204,36 @@ async function startServer() {
     
     if (!dbConnected) {
       console.error('❌ Impossible de se connecter à MySQL');
-      console.log('💡 Vérifiez votre configuration dans .env');
+      console.log('💡 Vérifiez DB_HOST/DB_USER/DB_PASSWORD dans .env et que MySQL est démarré');
       process.exit(1);
     }
 
-    // Démarrer le serveur
-    app.listen(PORT, () => {
+    // Démarrer le serveur sur toutes les interfaces réseau
+    app.listen(PORT, '0.0.0.0', () => {
+      const os = require('os');
+      const networkInterfaces = os.networkInterfaces();
+      const localIPs = [];
+      Object.values(networkInterfaces).forEach(ifaces => {
+        ifaces.forEach(iface => {
+          if (iface.family === 'IPv4' && !iface.internal) {
+            localIPs.push(iface.address);
+          }
+        });
+      });
+
       console.log('========================================');
-      console.log('🚀 SamaJob Backend MySQL démarré !');
-      console.log(`📡 Serveur: http://localhost:${PORT}`);
-      console.log(`🌍 Environnement: ${process.env.NODE_ENV || 'development'}`);
-      console.log(`📋 API: http://localhost:${PORT}${API_VERSION}`);
-      console.log(`💾 Base de données: ${process.env.DB_NAME}`);
+      console.log('SamaJob Backend (MySQL local) demarre !');
+      console.log(`Serveur local: http://localhost:${PORT}`);
+      localIPs.forEach(ip => {
+        console.log(`Reseau (mobile): http://${ip}:${PORT}/api`);
+      });
+      console.log(`Environnement: ${process.env.NODE_ENV || 'development'}`);
+      console.log('Base de donnees: MySQL/MariaDB local');
       console.log('========================================');
-      console.log('');
-      console.log('📚 Documentation: BACKEND_DOCUMENTATION.md');
-      console.log('🔧 Configuration: .env');
-      console.log('🗄️  Migrations: npm run migrate');
-      console.log('');
+      if (localIPs.length > 0) {
+        console.log(`\n>>> Mettez cette URL dans mobile/.env.local :`);
+        console.log(`    EXPO_PUBLIC_API_URL=http://${localIPs[0]}:${PORT}/api\n`);
+      }
     });
   } catch (error) {
     console.error('❌ Erreur au démarrage:', error);
