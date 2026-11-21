@@ -1,4 +1,4 @@
-# 💼 SamaJob — application mobile et API
+# SamaJob — application mobile et API
 
 ![React Native](https://img.shields.io/badge/React_Native-20232a?style=flat-square&logo=react&logoColor=61dafb) ![Expo](https://img.shields.io/badge/Expo_51-000020?style=flat-square&logo=expo&logoColor=white) ![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=nodedotjs&logoColor=white) ![MySQL](https://img.shields.io/badge/MySQL-4479a1?style=flat-square&logo=mysql&logoColor=white)
 
